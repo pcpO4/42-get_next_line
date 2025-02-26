@@ -6,7 +6,7 @@
 /*   By: pcervant <pcervant@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 16:25:40 by pcervant          #+#    #+#             */
-/*   Updated: 2025/02/24 11:05:51 by pcervant         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:14:50 by pcervant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,19 @@ char	*get_line(char *buffer)
 		return (NULL);
 	while (buffer[i] != '\n' && buffer[i] != 0)
 		i++;
-	line = ft_calloc((i + 1), sizeof(char));
+	line = ft_calloc((i + 2), sizeof(char));
 	i = 0;
 	while (buffer[i] != '\n' && buffer[i] != 0)
 	{
 		line[i] = buffer[i];
 		i++;
 	}
-	line[i] = 0;
+	if (buffer[i] == '\n')
+	{
+		line[i] = '\n';
+		i++;
+	}
+	line[i] = '\0';
 	return (line);
 }
 
@@ -56,10 +61,11 @@ char	*read_file(int fd, char *buffer)
 	n = 1;
 	while (n > 0)
 	{
-		n = read(fd, buf, BUFFER_SIZE);
-		if (n == -1)
+		n = (int)read(fd, buf, BUFFER_SIZE);
+		if (n < 0)
 		{
 			free(buf);
+			buf = NULL;
 			return (NULL);
 		}
 		buf[n] = 0;
@@ -83,6 +89,7 @@ char	*next(char *buffer)
 	if (buffer[i] == 0)
 	{
 		free(buffer);
+		buffer = NULL;
 		return (NULL);
 	}
 	temp = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
@@ -90,6 +97,7 @@ char	*next(char *buffer)
 	j = 0;
 	while (buffer[i])
 		temp[j++] = buffer[i++];
+	temp[j] = 0;
 	free(buffer);
 	return (temp);
 }
@@ -99,11 +107,16 @@ char	*get_next_line(int fd)
 	static char	*buffer;
 	char		*line;
 
-	if (BUFFER_SIZE <= 0 || fd <= 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	buffer = read_file(fd, buffer);
-	if (!buffer)
+	if (buffer == NULL || !*buffer)
+	{
+		free(buffer);
+		buffer = NULL;
 		return (NULL);
+	}
+	printf("b\n");
 	line = get_line(buffer);
 	buffer = next(buffer);
 	return (line);

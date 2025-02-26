@@ -6,12 +6,13 @@
 /*   By: pcervant <pcervant@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 16:25:45 by pcervant          #+#    #+#             */
-/*   Updated: 2025/02/24 11:01:58 by pcervant         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:09:55 by pcervant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "get_next_line.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -57,14 +58,12 @@ char	*ft_strchr(const char *string, int searchedChar)
 
 void	ft_bzero(void *s, size_t n)
 {
-	char	*str;
 	size_t	i;
 
-	str = (char *)s;
 	i = 0;
 	while (i < n)
 	{
-		str[i] = '\0';
+		((char*)s)[i] = '\0';
 		i++;
 	}
 }
@@ -83,7 +82,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*str;
 
-	str = (void *)malloc (nmemb * size);
+	str = (void *)malloc(nmemb * size);
 	if (str == NULL)
 		return (NULL);
 	ft_bzero(str, nmemb * size);
